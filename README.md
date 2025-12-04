@@ -1,16 +1,48 @@
-# React + Vite
+# Personal Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive personal portfolio website built with **React** and **Vite**. This project showcases professional experience, certifications, and activities in a clean and interactive interface.
 
-Currently, two official plugins are available:
+## ✨ Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **Responsive Design**: Fully optimized layout that adapts seamlessly to desktop, tablet, and mobile devices.
+-   **Dark/Light Mode**: User-selectable theme preference with persistence (saves your choice).
+-   **Multi-language Support**: Full internationalization (i18n) support for English and Italian.
+-   **Interactive UI**: Smooth scrolling, hover effects, and animated components.
+-   **Modern Styling**: Built with Tailwind CSS for a sleek and consistent look.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **Frontend Framework**: [React](https://react.dev/)
+-   **Build Tool**: [Vite](https://vitejs.dev/)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Icons**: [React Icons](https://react-icons.github.io/react-icons/) (Heroicons)
+-   **Deployment**: GitHub Pages (via GitHub Actions)
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+To run this project locally, follow these steps:
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/Magister89/portfolio.git
+    cd portfolio
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+## 📦 Deployment
+
+This project is configured for automatic deployment to **GitHub Pages** using GitHub Actions.
+Any push to the `main` branch triggers a workflow that builds the application and deploys it to the live site.
+
+## 📄 License
+
+This project is licensed under the MIT License.
