@@ -47,14 +47,14 @@ const Certifications = () => {
     }, []);
 
     return (
-        <section id="certifications" className="py-20 px-6 max-w-7xl mx-auto transition-colors duration-300">
+        <section id="certifications" className="py-20 px-2 md:px-6 max-w-7xl mx-auto transition-colors duration-300">
             <h2 className="text-3xl font-bold text-text dark:text-text-dark mb-12 text-center">{t.certifications.title}</h2>
-            <div className="flex flex-wrap justify-center gap-8">
+            <div className="flex flex-wrap justify-center gap-3 md:gap-8">
                 {badges.map((badge, index) => (
-                    <div key={index} className="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div key={index} className="bg-white p-2 md:p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
                         <div
-                            data-iframe-width="150"
-                            data-iframe-height="270"
+                            data-iframe-width="140"
+                            data-iframe-height="250"
                             data-share-badge-id={badge.id}
                             data-share-badge-host="https://www.credly.com"
                         ></div>
