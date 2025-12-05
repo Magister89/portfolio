@@ -70,7 +70,7 @@ const translations = {
             title: 'About Me',
             p1: 'I am a Data & Solutions Architect based in Rome, Italy.',
             p2: 'Currently focused on Open Source Cloud solutions for Data & AI.',
-            p3: 'When I\'m not designing architectures, I enjoy exploring new technologies, personal finance, reading books, and building Gunpla.',
+            p3: 'When I\'m not designing architectures, I enjoy exploring new technologies, personal finance, reading books and building Gunpla.',
             p4: 'Blog coming soon ...',
         },
         certifications: {
