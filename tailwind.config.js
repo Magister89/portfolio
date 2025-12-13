@@ -30,6 +30,15 @@ export default {
                 'card': '0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)',
                 'card-hover': '0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15)',
             },
+            animation: {
+                'gradient': 'gradient 3s ease infinite',
+            },
+            keyframes: {
+                gradient: {
+                    '0%, 100%': { 'background-position': '0% 50%' },
+                    '50%': { 'background-position': '100% 50%' },
+                },
+            },
         },
     },
     plugins: [],

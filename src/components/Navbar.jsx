@@ -12,7 +12,20 @@ const Navbar = () => {
         <nav className="bg-background dark:bg-background-dark border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300">
             <div className="px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center">
-                    <div className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">Giorgio Cembran</div>
+                    <a
+                        href="#"
+                        className="group flex items-center text-2xl font-bold tracking-tight transition-all duration-300 hover:scale-105"
+                        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    >
+                        <span className="bg-gradient-to-r from-primary via-cyan-400 to-blue-300 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                            giorgio
+                        </span>
+                        <span className="text-gray-400 dark:text-gray-500 mx-0.5">.</span>
+                        <span className="text-text dark:text-text-dark group-hover:text-primary transition-colors">
+                            cembran
+                        </span>
+                        <span className="ml-0.5 w-2 h-5 bg-primary animate-pulse"></span>
+                    </a>
                 </div>
 
                 {/* Mobile Menu Button */}
