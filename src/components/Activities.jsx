@@ -35,7 +35,41 @@ const Activities = () => {
         fetchData();
     }, []);
 
-    if (loading) return null;
+    // Skeleton loader to prevent layout shift
+    const SkeletonTable = () => (
+        <div className="flex flex-col h-full animate-pulse">
+            <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            </div>
+            <div className="overflow-x-auto flex-grow">
+                <div className="w-full border border-gray-200 dark:border-gray-700 rounded">
+                    <div className="bg-gray-50 dark:bg-zinc-900 h-10 border-b border-gray-200 dark:border-gray-700"></div>
+                    {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="h-10 border-b border-gray-200 dark:border-gray-700 flex">
+                            <div className="w-1/3 p-2"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div></div>
+                            <div className="w-2/3 p-2"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div></div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+
+    if (loading) {
+        return (
+            <section id="activities" className="py-20 px-6 transition-colors duration-300">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <SkeletonTable />
+                        <SkeletonTable />
+                        <SkeletonTable />
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     if (error) return null;
 
     const Table = ({ title, data, header1, header2, iconName }) => (

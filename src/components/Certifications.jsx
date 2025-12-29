@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
 const badges = [
@@ -34,20 +34,48 @@ const badges = [
 
 const Certifications = () => {
     const { t } = useLanguage();
+    const sectionRef = useRef(null);
+    const [isVisible, setIsVisible] = useState(false);
+    const [scriptLoaded, setScriptLoaded] = useState(false);
 
+    // Lazy load Credly script when section becomes visible
     useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: '100px' } // Start loading 100px before visible
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    // Load Credly script once visible
+    useEffect(() => {
+        if (!isVisible || scriptLoaded) return;
+
         const script = document.createElement('script');
         script.src = "//cdn.credly.com/assets/utilities/embed.js";
         script.async = true;
+        script.onload = () => setScriptLoaded(true);
         document.body.appendChild(script);
 
         return () => {
-            document.body.removeChild(script);
-        }
-    }, []);
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, [isVisible, scriptLoaded]);
 
     return (
-        <section id="certifications" className="py-20 px-2 md:px-6 max-w-7xl mx-auto transition-colors duration-300">
+        <section ref={sectionRef} id="certifications" className="py-20 px-2 md:px-6 max-w-7xl mx-auto transition-colors duration-300">
             <h2 className="text-3xl font-bold text-text dark:text-text-dark mb-12 text-center">{t.certifications.title}</h2>
             <div className="flex flex-wrap justify-center gap-2 max-w-5xl mx-auto">
                 {badges.map((badge, index) => (
