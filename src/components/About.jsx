@@ -11,7 +11,7 @@ const About = () => {
     return (
         <section id="about" className="py-20 px-6 bg-surface dark:bg-zinc-900 transition-colors duration-300">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                <div className="col-span-1 md:col-span-2 max-w-2xl">
+                <div className="col-span-1 md:col-span-2">
                     <div className="flex items-center gap-3 mb-6">
                         <img src={alien} alt="Alien" className="h-12 w-12 object-contain" />
                         <h2 className="text-3xl font-bold text-text dark:text-text-dark">{t.about.title}</h2>
