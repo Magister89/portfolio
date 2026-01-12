@@ -80,7 +80,7 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <Link to="/" className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar.about}</Link>
+                    <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.about}</a>
                     <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.activities}</a>
                     <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.certifications}</a>
                     <Link to="/blog" className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar?.blog || 'Blog'}</Link>
@@ -126,7 +126,7 @@ const Navbar = () => {
             {isOpen && (
                 <div id="mobile-menu" className="md:hidden px-6 pb-4 space-y-4 bg-background dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
                     <div className="flex flex-col space-y-3 pt-4">
-                        <Link to="/" onClick={() => setIsOpen(false)} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar.about}</Link>
+                        <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.about}</a>
                         <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.activities}</a>
                         <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.certifications}</a>
                         <Link to="/blog" onClick={() => setIsOpen(false)} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar?.blog || 'Blog'}</Link>
