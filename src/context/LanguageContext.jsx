@@ -1,6 +1,19 @@
-import React, { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext } from 'react';
 
 const LanguageContext = createContext();
+
+const getInitialLanguage = () => {
+    if (typeof window !== 'undefined') {
+        const storedLanguage = window.localStorage.getItem('language');
+        if (storedLanguage === 'en' || storedLanguage === 'it') {
+            return storedLanguage;
+        }
+        // Fall back to browser language preference
+        const browserLang = navigator.language?.split('-')[0];
+        return browserLang === 'it' ? 'it' : 'en';
+    }
+    return 'en';
+};
 
 const translations = {
     it: {
@@ -23,6 +36,8 @@ const translations = {
             posts: 'Articoli',
             showPosts: 'Mostra articoli',
             noPostSelected: 'Seleziona un articolo da leggere',
+            share: 'Condividi:',
+            shareOn: 'Condividi su',
         },
         certifications: {
             title: 'Certificazioni',
@@ -81,6 +96,8 @@ const translations = {
             posts: 'Posts',
             showPosts: 'Show posts',
             noPostSelected: 'Select a post to read',
+            share: 'Share:',
+            shareOn: 'Share on',
         },
         certifications: {
             title: 'Certifications',
@@ -122,10 +139,11 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }) => {
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState(getInitialLanguage);
 
     const toggleLanguage = (lang) => {
         setLanguage(lang);
+        window.localStorage.setItem('language', lang);
     };
 
     return (
@@ -135,4 +153,10 @@ export const LanguageProvider = ({ children }) => {
     );
 };
 
-export const useLanguage = () => useContext(LanguageContext);
+export const useLanguage = () => {
+    const context = useContext(LanguageContext);
+    if (context === undefined) {
+        throw new Error('useLanguage must be used within a LanguageProvider');
+    }
+    return context;
+};

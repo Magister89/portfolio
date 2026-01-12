@@ -78,8 +78,8 @@ const Certifications = () => {
         <section ref={sectionRef} id="certifications" className="py-20 px-2 md:px-6 max-w-7xl mx-auto transition-colors duration-300">
             <h2 className="text-3xl font-bold text-text dark:text-text-dark mb-12 text-center">{t.certifications.title}</h2>
             <div className="flex flex-wrap justify-center gap-2 max-w-5xl mx-auto">
-                {badges.map((badge, index) => (
-                    <div key={index} className="bg-white p-2 md:p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                {badges.map((badge) => (
+                    <div key={badge.id} className="bg-white p-2 md:p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
                         <div
                             data-iframe-width="140"
                             data-iframe-height="250"

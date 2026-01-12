@@ -11,6 +11,21 @@ const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    // Wait for element to appear in DOM and scroll to it
+    const scrollToElement = (sectionId, maxAttempts = 20) => {
+        let attempts = 0;
+        const tryScroll = () => {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            } else if (attempts < maxAttempts) {
+                attempts++;
+                requestAnimationFrame(tryScroll);
+            }
+        };
+        requestAnimationFrame(tryScroll);
+    };
+
     // Smart navigation: scroll if on homepage, navigate if on other pages
     const handleSectionClick = (e, sectionId) => {
         e.preventDefault();
@@ -18,19 +33,11 @@ const Navbar = () => {
 
         if (location.pathname === '/') {
             // Already on homepage, just scroll
-            const element = document.getElementById(sectionId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
+            scrollToElement(sectionId);
         } else {
-            // Navigate to homepage with hash
+            // Navigate to homepage then scroll
             navigate('/', { replace: false });
-            setTimeout(() => {
-                const element = document.getElementById(sectionId);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }
-            }, 100);
+            scrollToElement(sectionId);
         }
     };
 
@@ -59,6 +66,9 @@ const Navbar = () => {
                     <button
                         onClick={() => setIsOpen(!isOpen)}
                         className="text-text dark:text-text-dark hover:text-primary focus:outline-none"
+                        aria-expanded={isOpen}
+                        aria-controls="mobile-menu"
+                        aria-label={isOpen ? 'Close menu' : 'Open menu'}
                     >
                         {isOpen ? (
                             <HiX className="w-6 h-6" />
@@ -78,17 +88,21 @@ const Navbar = () => {
                         <HiMail className="w-6 h-6" />
                     </a>
 
-                    <div className="flex items-center space-x-2 text-sm font-medium">
+                    <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
                         <button
                             onClick={() => setLanguage('en')}
                             className={`${language === 'en' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                            aria-pressed={language === 'en'}
+                            lang="en"
                         >
                             EN
                         </button>
-                        <span className="text-gray-300 dark:text-gray-600">|</span>
+                        <span className="text-gray-300 dark:text-gray-600" aria-hidden="true">|</span>
                         <button
                             onClick={() => setLanguage('it')}
                             className={`${language === 'it' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                            aria-pressed={language === 'it'}
+                            lang="it"
                         >
                             IT
                         </button>
@@ -110,7 +124,7 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden px-6 pb-4 space-y-4 bg-background dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
+                <div id="mobile-menu" className="md:hidden px-6 pb-4 space-y-4 bg-background dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
                     <div className="flex flex-col space-y-3 pt-4">
                         <Link to="/" onClick={() => setIsOpen(false)} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar.about}</Link>
                         <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.activities}</a>
@@ -123,17 +137,21 @@ const Navbar = () => {
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                        <div className="flex items-center space-x-2 text-sm font-medium">
+                        <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
                             <button
                                 onClick={() => setLanguage('en')}
                                 className={`${language === 'en' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                                aria-pressed={language === 'en'}
+                                lang="en"
                             >
                                 EN
                             </button>
-                            <span className="text-gray-300 dark:text-gray-600">|</span>
+                            <span className="text-gray-300 dark:text-gray-600" aria-hidden="true">|</span>
                             <button
                                 onClick={() => setLanguage('it')}
                                 className={`${language === 'it' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                                aria-pressed={language === 'it'}
+                                lang="it"
                             >
                                 IT
                             </button>

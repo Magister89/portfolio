@@ -36,7 +36,7 @@ const About = () => {
                     <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-white shadow-lg">
                         <img
                             src={avatar}
-                            alt="Profile"
+                            alt="Giorgio Cembran"
                             className="w-full h-full object-cover"
                         />
                     </div>

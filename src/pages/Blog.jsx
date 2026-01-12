@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -7,10 +7,13 @@ import Markdown from 'react-markdown';
 import { ScrollArea } from '@base-ui/react/scroll-area';
 import { FaLinkedin, FaXTwitter, FaWhatsapp, FaFacebook } from 'react-icons/fa6';
 import CookiePolicy from '../components/CookiePolicy';
+import { useCookiePolicy } from '../hooks/useCookiePolicy';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 
 // Share buttons component
 const ShareButtons = ({ title, url }) => {
+    const { t } = useLanguage();
     const shareLinks = [
         {
             name: 'LinkedIn',
@@ -40,7 +43,7 @@ const ShareButtons = ({ title, url }) => {
 
     return (
         <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-400 dark:text-gray-500">Condividi:</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">{t.blog?.share || 'Share:'}</span>
             {shareLinks.map(({ name, icon: Icon, href, hoverColor }) => (
                 <a
                     key={name}
@@ -50,7 +53,7 @@ const ShareButtons = ({ title, url }) => {
                     className="text-gray-400 dark:text-gray-500 transition-colors"
                     onMouseEnter={(e) => e.currentTarget.style.color = hoverColor}
                     onMouseLeave={(e) => e.currentTarget.style.color = ''}
-                    aria-label={`Condividi su ${name}`}
+                    aria-label={`${t.blog?.shareOn || 'Share on'} ${name}`}
                 >
                     <Icon className="w-4 h-4" />
                 </a>
@@ -111,22 +114,42 @@ function getPosts() {
     return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
+// Memoized markdown components (defined outside component to prevent recreation)
+const markdownComponents = {
+    h1: ({ children }) => <h1 className="text-2xl font-bold text-text dark:text-text-dark mb-4">{children}</h1>,
+    h2: ({ children }) => <h2 className="text-xl font-bold text-text dark:text-text-dark mb-3 mt-6">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-lg font-semibold text-text dark:text-text-dark mb-2 mt-4">{children}</h3>,
+    p: ({ children, node }) => {
+        const isCaption = node?.children?.length === 1 && node.children[0]?.tagName === 'em';
+        return <p className={`text-gray-700 dark:text-gray-100 mb-4 leading-relaxed ${isCaption ? 'text-center' : ''}`}>{children}</p>;
+    },
+    ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
+    ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
+    li: ({ children }) => <li className="text-gray-700 dark:text-gray-100">{children}</li>,
+    strong: ({ children }) => <strong className="font-bold text-gray-900 dark:text-white">{children}</strong>,
+    em: ({ children }) => <em className="italic text-gray-700 dark:text-gray-200">{children}</em>,
+    a: ({ href, children }) => {
+        const isSafeUrl = href && !href.toLowerCase().startsWith('javascript:');
+        return isSafeUrl ? (
+            <a href={href} className="text-primary hover:text-primary/80 underline" target="_blank" rel="noopener noreferrer">{children}</a>
+        ) : (
+            <span className="text-primary">{children}</span>
+        );
+    },
+    code: ({ children }) => <code className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>,
+    pre: ({ children }) => <pre className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">{children}</pre>,
+    hr: () => <hr className="border-gray-200 dark:border-gray-700 my-6" />,
+    blockquote: ({ children }) => <blockquote className="border-l-4 border-primary pl-4 italic text-gray-600 dark:text-gray-300 my-4">{children}</blockquote>,
+    img: ({ src, alt }) => <img src={src} alt={alt} className="max-w-md max-h-64 h-auto mx-auto block rounded-lg my-4" />,
+};
+
 function Blog() {
     const location = useLocation();
     const navigate = useNavigate();
     const { t } = useLanguage();
     const posts = useMemo(() => getPosts(), []);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [isCookiePolicyOpen, setIsCookiePolicyOpen] = useState(false);
-
-    const openCookiePolicy = (e) => {
-        if (e) e.preventDefault();
-        setIsCookiePolicyOpen(true);
-    };
-
-    const closeCookiePolicy = () => {
-        setIsCookiePolicyOpen(false);
-    };
+    const cookiePolicy = useCookiePolicy();
 
     // Extract slug from URL path (e.g., /blog/my-post -> my-post)
     const pathParts = location.pathname.split('/');
@@ -136,6 +159,9 @@ function Blog() {
     const selectedPost = slug
         ? posts.find(p => p.slug === slug)
         : posts[0];
+
+    // Set document title based on selected post
+    useDocumentTitle(selectedPost?.title || 'Blog');
 
     // Redirect to latest post if no slug is provided
     useEffect(() => {
@@ -163,7 +189,7 @@ function Blog() {
     return (
         <>
             <Navbar />
-            <main className="min-h-[calc(100vh-180px)] py-12 px-6 bg-surface dark:bg-surface-dark transition-colors duration-300">
+            <main id="main-content" className="min-h-[calc(100vh-180px)] py-12 px-6 bg-surface dark:bg-surface-dark transition-colors duration-300">
                 <div className="max-w-7xl mx-auto">
                     {/* Header with title and toggle button */}
                     <div className="flex items-center justify-between mb-8">
@@ -172,21 +198,20 @@ function Blog() {
                         </h1>
                         <button
                             onClick={toggleSidebar}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-text dark:text-text-dark"
+                            className="lg:hidden flex items-center gap-2 p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-text dark:text-text-dark"
                         >
                             <span className="material-symbols-outlined text-lg">
                                 {sidebarOpen ? 'menu_open' : 'menu'}
                             </span>
-                            {t.blog?.showPosts || 'Mostra articoli'}
                         </button>
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-8 overflow-hidden">
                         {/* Sidebar - Post List - Collapsible */}
                         <aside
-                            className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 ${sidebarOpen
-                                ? 'max-h-[400px] lg:max-h-none lg:w-72 opacity-100'
-                                : 'max-h-0 lg:max-h-none lg:w-0 opacity-0'
+                            className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 lg:max-h-none lg:w-72 lg:opacity-100 ${sidebarOpen
+                                ? 'max-h-[400px] opacity-100'
+                                : 'max-h-0 opacity-0'
                                 }`}
                         >
                             <div className="w-full lg:w-72">
@@ -241,30 +266,7 @@ function Blog() {
                                         </time>
                                     </header>
                                     <div className="max-w-none">
-                                        <Markdown
-                                            components={{
-                                                h1: ({ children }) => <h1 className="text-2xl font-bold text-text dark:text-text-dark mb-4">{children}</h1>,
-                                                h2: ({ children }) => <h2 className="text-xl font-bold text-text dark:text-text-dark mb-3 mt-6">{children}</h2>,
-                                                h3: ({ children }) => <h3 className="text-lg font-semibold text-text dark:text-text-dark mb-2 mt-4">{children}</h3>,
-                                                p: ({ children, node }) => {
-                                                    // Check if paragraph contains only an em element (caption pattern)
-                                                    const isCaption = node?.children?.length === 1 &&
-                                                        node.children[0]?.tagName === 'em';
-                                                    return <p className={`text-gray-700 dark:text-gray-100 mb-4 leading-relaxed ${isCaption ? 'text-center' : ''}`}>{children}</p>;
-                                                },
-                                                ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
-                                                ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
-                                                li: ({ children }) => <li className="text-gray-700 dark:text-gray-100">{children}</li>,
-                                                strong: ({ children }) => <strong className="font-bold text-gray-900 dark:text-white">{children}</strong>,
-                                                em: ({ children }) => <em className="italic text-gray-700 dark:text-gray-200">{children}</em>,
-                                                a: ({ href, children }) => <a href={href} className="text-primary hover:text-primary/80 underline">{children}</a>,
-                                                code: ({ children }) => <code className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>,
-                                                pre: ({ children }) => <pre className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">{children}</pre>,
-                                                hr: () => <hr className="border-gray-200 dark:border-gray-700 my-6" />,
-                                                blockquote: ({ children }) => <blockquote className="border-l-4 border-primary pl-4 italic text-gray-600 dark:text-gray-300 my-4">{children}</blockquote>,
-                                                img: ({ src, alt }) => <img src={src} alt={alt} className="max-w-md max-h-64 h-auto mx-auto block rounded-lg my-4" />,
-                                            }}
-                                        >
+                                        <Markdown components={markdownComponents}>
                                             {selectedPost.content}
                                         </Markdown>
                                     </div>
@@ -286,8 +288,8 @@ function Blog() {
                     </div>
                 </div>
             </main>
-            <Footer onOpenCookiePolicy={openCookiePolicy} />
-            <CookiePolicy isOpen={isCookiePolicyOpen} onClose={closeCookiePolicy} />
+            <Footer onOpenCookiePolicy={cookiePolicy.open} />
+            <CookiePolicy isOpen={cookiePolicy.isOpen} onClose={cookiePolicy.close} />
         </>
     );
 }
