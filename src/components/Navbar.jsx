@@ -1,9 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Menu, X, Mail, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+// Navigation link styles (shared between desktop and mobile)
+const linkClassName = "text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer";
+
+// Language toggle button component
+const LanguageToggle = ({ language, setLanguage }) => (
+    <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
+        <button
+            onClick={() => setLanguage('en')}
+            className={`${language === 'en' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
+            aria-pressed={language === 'en'}
+            lang="en"
+        >
+            EN
+        </button>
+        <span className="text-border dark:text-border-dark" aria-hidden="true">|</span>
+        <button
+            onClick={() => setLanguage('it')}
+            className={`${language === 'it' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
+            aria-pressed={language === 'it'}
+            lang="it"
+        >
+            IT
+        </button>
+    </div>
+);
+
+// Theme toggle button component
+const ThemeToggle = ({ theme, toggleTheme }) => (
+    <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleTheme}
+        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+        {theme === 'dark' ? (
+            <Sun className="w-4 h-4" />
+        ) : (
+            <Moon className="w-4 h-4" />
+        )}
+    </Button>
+);
 
 const Navbar = () => {
     const { theme, toggleTheme } = useTheme();
@@ -11,6 +53,23 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+    const pendingScrollRef = useRef(null);
+
+    // Navigation links data
+    const navLinks = [
+        { id: 'about', label: t.navbar.about, isSection: true },
+        { id: 'activities', label: t.navbar.activities, isSection: true },
+        { id: 'certifications', label: t.navbar.certifications, isSection: true },
+    ];
+
+    // Handle pending scroll after navigation completes
+    useEffect(() => {
+        if (pendingScrollRef.current && location.pathname === '/') {
+            const sectionId = pendingScrollRef.current;
+            pendingScrollRef.current = null;
+            scrollToElement(sectionId);
+        }
+    }, [location.pathname]);
 
     // Wait for element to appear in DOM and scroll to it
     const scrollToElement = (sectionId, maxAttempts = 20) => {
@@ -36,9 +95,9 @@ const Navbar = () => {
             // Already on homepage, just scroll
             scrollToElement(sectionId);
         } else {
-            // Navigate to homepage then scroll
+            // Store pending scroll and navigate
+            pendingScrollRef.current = sectionId;
             navigate('/', { replace: false });
-            scrollToElement(sectionId);
         }
     };
 
@@ -82,46 +141,26 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.about}</a>
-                    <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.activities}</a>
-                    <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.certifications}</a>
-                    <Link to="/blog" className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors">{t.navbar?.blog || 'Blog'}</Link>
-                    <a href="mailto:giorgio.cembran@gmail.com" className="text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors hover:scale-110 transform duration-200" aria-label={t.navbar.contact}>
+                    {navLinks.map(link => (
+                        <a
+                            key={link.id}
+                            href={`#${link.id}`}
+                            onClick={(e) => handleSectionClick(e, link.id)}
+                            className={linkClassName}
+                        >
+                            {link.label}
+                        </a>
+                    ))}
+                    <Link to="/blog" className={linkClassName}>{t.navbar?.blog || 'Blog'}</Link>
+                    <a
+                        href="mailto:giorgio.cembran@gmail.com"
+                        className="text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors hover:scale-110 transform duration-200"
+                        aria-label={t.navbar.contact}
+                    >
                         <Mail className="w-5 h-5" />
                     </a>
-
-                    <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
-                        <button
-                            onClick={() => setLanguage('en')}
-                            className={`${language === 'en' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
-                            aria-pressed={language === 'en'}
-                            lang="en"
-                        >
-                            EN
-                        </button>
-                        <span className="text-border dark:text-border-dark" aria-hidden="true">|</span>
-                        <button
-                            onClick={() => setLanguage('it')}
-                            className={`${language === 'it' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
-                            aria-pressed={language === 'it'}
-                            lang="it"
-                        >
-                            IT
-                        </button>
-                    </div>
-
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={toggleTheme}
-                        aria-label="Toggle Dark Mode"
-                    >
-                        {theme === 'dark' ? (
-                            <Sun className="w-4 h-4" />
-                        ) : (
-                            <Moon className="w-4 h-4" />
-                        )}
-                    </Button>
+                    <LanguageToggle language={language} setLanguage={setLanguage} />
+                    <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
                 </div>
             </div>
 
@@ -129,49 +168,30 @@ const Navbar = () => {
             {isOpen && (
                 <div id="mobile-menu" className="md:hidden px-6 pb-4 space-y-4 bg-background dark:bg-background-dark border-t border-border dark:border-border-dark">
                     <div className="flex flex-col space-y-3 pt-4">
-                        <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.about}</a>
-                        <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.activities}</a>
-                        <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.certifications}</a>
-                        <Link to="/blog" onClick={() => setIsOpen(false)} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors">{t.navbar?.blog || 'Blog'}</Link>
-                        <a href="mailto:giorgio.cembran@gmail.com" className="flex items-center text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors" aria-label={t.navbar.contact}>
+                        {navLinks.map(link => (
+                            <a
+                                key={link.id}
+                                href={`#${link.id}`}
+                                onClick={(e) => handleSectionClick(e, link.id)}
+                                className={linkClassName}
+                            >
+                                {link.label}
+                            </a>
+                        ))}
+                        <Link to="/blog" onClick={() => setIsOpen(false)} className={linkClassName}>{t.navbar?.blog || 'Blog'}</Link>
+                        <a
+                            href="mailto:giorgio.cembran@gmail.com"
+                            className="flex items-center text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors"
+                            aria-label={t.navbar.contact}
+                        >
                             <span className="mr-2">{t.navbar.contact}</span>
                             <Mail className="w-4 h-4" />
                         </a>
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t border-border dark:border-border-dark">
-                        <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
-                            <button
-                                onClick={() => setLanguage('en')}
-                                className={`${language === 'en' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
-                                aria-pressed={language === 'en'}
-                                lang="en"
-                            >
-                                EN
-                            </button>
-                            <span className="text-border dark:text-border-dark" aria-hidden="true">|</span>
-                            <button
-                                onClick={() => setLanguage('it')}
-                                className={`${language === 'it' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
-                                aria-pressed={language === 'it'}
-                                lang="it"
-                            >
-                                IT
-                            </button>
-                        </div>
-
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={toggleTheme}
-                            aria-label="Toggle Dark Mode"
-                        >
-                            {theme === 'dark' ? (
-                                <Sun className="w-4 h-4" />
-                            ) : (
-                                <Moon className="w-4 h-4" />
-                            )}
-                        </Button>
+                        <LanguageToggle language={language} setLanguage={setLanguage} />
+                        <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
                     </div>
                 </div>
             )}

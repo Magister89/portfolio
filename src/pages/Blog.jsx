@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -110,6 +110,9 @@ function getPosts() {
     return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
+// Get posts at module level (data is loaded eagerly, no need for useMemo)
+const posts = getPosts();
+
 // Memoized markdown components (defined outside component to prevent recreation)
 const markdownComponents = {
     h1: ({ children }) => <h1 className="text-xl font-bold text-foreground dark:text-foreground-dark mb-3">{children}</h1>,
@@ -125,7 +128,13 @@ const markdownComponents = {
     strong: ({ children }) => <strong className="font-bold text-foreground dark:text-foreground-dark">{children}</strong>,
     em: ({ children }) => <em className="italic text-muted-foreground dark:text-muted-foreground-dark">{children}</em>,
     a: ({ href, children }) => {
-        const isSafeUrl = href && !href.toLowerCase().startsWith('javascript:');
+        // Allowlist approach for URL safety
+        const isSafeUrl = href && (
+            href.startsWith('https://') ||
+            href.startsWith('http://') ||
+            href.startsWith('mailto:') ||
+            href.startsWith('/')
+        );
         return isSafeUrl ? (
             <a href={href} className="text-foreground dark:text-foreground-dark underline underline-offset-4 hover:text-muted-foreground dark:hover:text-muted-foreground-dark transition-colors" target="_blank" rel="noopener noreferrer">{children}</a>
         ) : (
@@ -143,9 +152,9 @@ function Blog() {
     const location = useLocation();
     const navigate = useNavigate();
     const { t } = useLanguage();
-    const posts = useMemo(() => getPosts(), []);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const cookiePolicy = useCookiePolicy();
+    const mainContentRef = useRef(null);
 
     // Extract slug from URL path (e.g., /blog/my-post -> my-post)
     const pathParts = location.pathname.split('/');
@@ -164,11 +173,13 @@ function Blog() {
         if (!slug && posts.length > 0) {
             navigate(`/blog/${posts[0].slug}`, { replace: true });
         }
-    }, [slug, posts, navigate]);
+    }, [slug, navigate]);
 
-    // Scroll to top when entering blog page
+    // Scroll to top and manage focus when entering blog page
     useEffect(() => {
         window.scrollTo(0, 0);
+        // Focus main content for screen reader users
+        mainContentRef.current?.focus();
     }, []);
 
 
@@ -185,18 +196,14 @@ function Blog() {
     return (
         <>
             <Navbar />
-            <main id="main-content" className="min-h-[calc(100vh-180px)] py-10 px-6 bg-muted dark:bg-muted-dark transition-colors duration-300">
+            <main ref={mainContentRef} id="main-content" tabIndex={-1} className="min-h-[calc(100vh-180px)] py-10 px-6 bg-muted dark:bg-muted-dark transition-colors duration-300 outline-none">
                 <div className="max-w-7xl mx-auto">
-                    {/* Header with title and toggle button */}
-                    <div className="flex items-center justify-between mb-6">
-                        <h1 className="text-2xl font-bold text-foreground dark:text-foreground-dark">
-                            {t.blog?.title || 'Blog'}
-                        </h1>
+                    {/* Toggle button for mobile sidebar */}
+                    <div className="flex justify-end mb-6 lg:hidden">
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={toggleSidebar}
-                            className="lg:hidden"
                         >
                             <span className="material-symbols-outlined text-lg">
                                 {sidebarOpen ? 'menu_open' : 'menu'}
