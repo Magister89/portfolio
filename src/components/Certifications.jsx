@@ -75,11 +75,11 @@ const Certifications = () => {
     }, [isVisible, scriptLoaded]);
 
     return (
-        <section ref={sectionRef} id="certifications" className="py-20 px-2 md:px-6 max-w-7xl mx-auto transition-colors duration-300">
-            <h2 className="text-3xl font-bold text-text dark:text-text-dark mb-12 text-center">{t.certifications.title}</h2>
+        <section ref={sectionRef} id="certifications" className="py-16 px-2 md:px-6 max-w-7xl mx-auto transition-colors duration-300">
+            <h2 className="text-2xl font-bold text-foreground dark:text-foreground-dark mb-10 text-center">{t.certifications.title}</h2>
             <div className="flex flex-wrap justify-center gap-2 max-w-5xl mx-auto">
                 {badges.map((badge) => (
-                    <div key={badge.id} className="bg-white p-2 md:p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div key={badge.id} className="bg-white p-2 md:p-3 rounded-xl shadow-card hover:shadow-card-hover transition-shadow duration-300 border border-border dark:border-border-dark">
                         <div
                             data-iframe-width="140"
                             data-iframe-height="250"
@@ -89,9 +89,9 @@ const Certifications = () => {
                     </div>
                 ))}
             </div>
-            <div className="mt-12 text-center">
-                <p className="text-gray-600 dark:text-gray-300">
-                    {t.certifications.viewAll} <a href="https://www.credly.com/users/giorgio-cembran" target="_blank" rel="noopener noreferrer" className="text-primary dark:text-blue-400 font-medium hover:underline">Credly</a>.
+            <div className="mt-10 text-center">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark">
+                    {t.certifications.viewAll} <a href="https://www.credly.com/users/giorgio-cembran" target="_blank" rel="noopener noreferrer" className="text-foreground dark:text-foreground-dark font-medium underline underline-offset-4 hover:text-muted-foreground dark:hover:text-muted-foreground-dark transition-colors">Credly</a>.
                 </p>
             </div>
         </section>

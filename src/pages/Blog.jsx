@@ -4,8 +4,10 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useLanguage } from '../context/LanguageContext';
 import Markdown from 'react-markdown';
-import { ScrollArea } from '@base-ui/react/scroll-area';
-import { FaLinkedin, FaXTwitter, FaWhatsapp, FaFacebook } from 'react-icons/fa6';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Linkedin, Twitter, MessageCircle, Facebook } from 'lucide-react';
 import CookiePolicy from '../components/CookiePolicy';
 import { useCookiePolicy } from '../hooks/useCookiePolicy';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
@@ -17,42 +19,36 @@ const ShareButtons = ({ title, url }) => {
     const shareLinks = [
         {
             name: 'LinkedIn',
-            icon: FaLinkedin,
-            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-            hoverColor: '#0077b5'
+            icon: Linkedin,
+            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
         },
         {
             name: 'X',
-            icon: FaXTwitter,
-            href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-            hoverColor: '#000000'
+            icon: Twitter,
+            href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
         },
         {
             name: 'WhatsApp',
-            icon: FaWhatsapp,
-            href: `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`,
-            hoverColor: '#25d366'
+            icon: MessageCircle,
+            href: `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`
         },
         {
             name: 'Facebook',
-            icon: FaFacebook,
-            href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-            hoverColor: '#1877f2'
+            icon: Facebook,
+            href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
         }
     ];
 
     return (
         <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-400 dark:text-gray-500">{t.blog?.share || 'Share:'}</span>
-            {shareLinks.map(({ name, icon: Icon, href, hoverColor }) => (
+            <span className="text-xs text-muted-foreground dark:text-muted-foreground-dark">{t.blog?.share || 'Share:'}</span>
+            {shareLinks.map(({ name, icon: Icon, href }) => (
                 <a
                     key={name}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-400 dark:text-gray-500 transition-colors"
-                    onMouseEnter={(e) => e.currentTarget.style.color = hoverColor}
-                    onMouseLeave={(e) => e.currentTarget.style.color = ''}
+                    className="text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors"
                     aria-label={`${t.blog?.shareOn || 'Share on'} ${name}`}
                 >
                     <Icon className="w-4 h-4" />
@@ -116,31 +112,31 @@ function getPosts() {
 
 // Memoized markdown components (defined outside component to prevent recreation)
 const markdownComponents = {
-    h1: ({ children }) => <h1 className="text-2xl font-bold text-text dark:text-text-dark mb-4">{children}</h1>,
-    h2: ({ children }) => <h2 className="text-xl font-bold text-text dark:text-text-dark mb-3 mt-6">{children}</h2>,
-    h3: ({ children }) => <h3 className="text-lg font-semibold text-text dark:text-text-dark mb-2 mt-4">{children}</h3>,
+    h1: ({ children }) => <h1 className="text-xl font-bold text-foreground dark:text-foreground-dark mb-3">{children}</h1>,
+    h2: ({ children }) => <h2 className="text-lg font-bold text-foreground dark:text-foreground-dark mb-2 mt-5">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-base font-semibold text-foreground dark:text-foreground-dark mb-2 mt-4">{children}</h3>,
     p: ({ children, node }) => {
         const isCaption = node?.children?.length === 1 && node.children[0]?.tagName === 'em';
-        return <p className={`text-gray-700 dark:text-gray-100 mb-4 leading-relaxed ${isCaption ? 'text-center' : ''}`}>{children}</p>;
+        return <p className={`text-sm text-foreground dark:text-foreground-dark mb-3 leading-relaxed ${isCaption ? 'text-center' : ''}`}>{children}</p>;
     },
-    ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
-    ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
-    li: ({ children }) => <li className="text-gray-700 dark:text-gray-100">{children}</li>,
-    strong: ({ children }) => <strong className="font-bold text-gray-900 dark:text-white">{children}</strong>,
-    em: ({ children }) => <em className="italic text-gray-700 dark:text-gray-200">{children}</em>,
+    ul: ({ children }) => <ul className="list-disc list-inside mb-3 space-y-1 text-sm">{children}</ul>,
+    ol: ({ children }) => <ol className="list-decimal list-inside mb-3 space-y-1 text-sm">{children}</ol>,
+    li: ({ children }) => <li className="text-foreground dark:text-foreground-dark">{children}</li>,
+    strong: ({ children }) => <strong className="font-bold text-foreground dark:text-foreground-dark">{children}</strong>,
+    em: ({ children }) => <em className="italic text-muted-foreground dark:text-muted-foreground-dark">{children}</em>,
     a: ({ href, children }) => {
         const isSafeUrl = href && !href.toLowerCase().startsWith('javascript:');
         return isSafeUrl ? (
-            <a href={href} className="text-primary hover:text-primary/80 underline" target="_blank" rel="noopener noreferrer">{children}</a>
+            <a href={href} className="text-foreground dark:text-foreground-dark underline underline-offset-4 hover:text-muted-foreground dark:hover:text-muted-foreground-dark transition-colors" target="_blank" rel="noopener noreferrer">{children}</a>
         ) : (
-            <span className="text-primary">{children}</span>
+            <span className="text-foreground dark:text-foreground-dark">{children}</span>
         );
     },
-    code: ({ children }) => <code className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>,
-    pre: ({ children }) => <pre className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm">{children}</pre>,
-    hr: () => <hr className="border-gray-200 dark:border-gray-700 my-6" />,
-    blockquote: ({ children }) => <blockquote className="border-l-4 border-primary pl-4 italic text-gray-600 dark:text-gray-300 my-4">{children}</blockquote>,
-    img: ({ src, alt }) => <img src={src} alt={alt} className="max-w-md max-h-64 h-auto mx-auto block rounded-lg my-4" />,
+    code: ({ children }) => <code className="bg-muted dark:bg-muted-dark text-foreground dark:text-foreground-dark px-1.5 py-0.5 rounded text-xs font-mono">{children}</code>,
+    pre: ({ children }) => <pre className="bg-muted dark:bg-muted-dark text-foreground dark:text-foreground-dark p-4 rounded-lg overflow-x-auto mb-3 text-xs">{children}</pre>,
+    hr: () => <hr className="border-border dark:border-border-dark my-5" />,
+    blockquote: ({ children }) => <blockquote className="border-l-4 border-border dark:border-border-dark pl-4 italic text-muted-foreground dark:text-muted-foreground-dark my-3">{children}</blockquote>,
+    img: ({ src, alt }) => <img src={src} alt={alt} className="max-w-md max-h-64 h-auto mx-auto block rounded-lg my-3" />,
 };
 
 function Blog() {
@@ -189,100 +185,100 @@ function Blog() {
     return (
         <>
             <Navbar />
-            <main id="main-content" className="min-h-[calc(100vh-180px)] py-12 px-6 bg-surface dark:bg-surface-dark transition-colors duration-300">
+            <main id="main-content" className="min-h-[calc(100vh-180px)] py-10 px-6 bg-muted dark:bg-muted-dark transition-colors duration-300">
                 <div className="max-w-7xl mx-auto">
                     {/* Header with title and toggle button */}
-                    <div className="flex items-center justify-between mb-8">
-                        <h1 className="text-3xl font-bold text-text dark:text-text-dark">
+                    <div className="flex items-center justify-between mb-6">
+                        <h1 className="text-2xl font-bold text-foreground dark:text-foreground-dark">
                             {t.blog?.title || 'Blog'}
                         </h1>
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={toggleSidebar}
-                            className="lg:hidden flex items-center gap-2 p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium text-text dark:text-text-dark"
+                            className="lg:hidden"
                         >
                             <span className="material-symbols-outlined text-lg">
                                 {sidebarOpen ? 'menu_open' : 'menu'}
                             </span>
-                        </button>
+                        </Button>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row gap-8 overflow-hidden">
+                    <div className="flex flex-col lg:flex-row gap-6 overflow-hidden">
                         {/* Sidebar - Post List - Collapsible */}
                         <aside
-                            className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 lg:max-h-none lg:w-72 lg:opacity-100 ${sidebarOpen
+                            className={`transition-all duration-300 ease-in-out overflow-hidden shrink-0 lg:max-h-none lg:w-64 lg:opacity-100 ${sidebarOpen
                                 ? 'max-h-[400px] opacity-100'
                                 : 'max-h-0 opacity-0'
                                 }`}
                         >
-                            <div className="w-full lg:w-72">
-                                <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+                            <div className="w-full lg:w-64">
+                                <h2 className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground-dark uppercase tracking-wider mb-3">
                                     {t.blog?.posts || 'Posts'}
                                 </h2>
-                                <ScrollArea.Root className="h-auto lg:h-[600px] overflow-hidden">
-                                    <ScrollArea.Viewport className="h-full w-full overscroll-contain">
-                                        <nav className="space-y-2 pr-4">
-                                            {posts.map((post) => (
-                                                <button
-                                                    key={post.slug}
-                                                    onClick={() => handlePostClick(post.slug)}
-                                                    className={`w-full text-left p-3 rounded-xl transition-all duration-200 ${selectedPost?.slug === post.slug
-                                                        ? 'bg-primary/10 dark:bg-primary/20 border-l-4 border-primary'
-                                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                                                        }`}
-                                                >
-                                                    <h3 className={`font-medium text-sm ${selectedPost?.slug === post.slug
-                                                        ? 'text-primary dark:text-blue-400'
-                                                        : 'text-text dark:text-text-dark'
-                                                        }`}>
-                                                        {post.title}
-                                                    </h3>
-                                                    <time className="text-xs text-gray-500 dark:text-gray-400">
-                                                        {post.date}
-                                                    </time>
-                                                </button>
-                                            ))}
-                                        </nav>
-                                    </ScrollArea.Viewport>
-                                    <ScrollArea.Scrollbar
-                                        orientation="vertical"
-                                        className="flex w-2.5 touch-none select-none p-0.5 transition-colors duration-150"
-                                    >
-                                        <ScrollArea.Thumb className="relative flex-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-                                    </ScrollArea.Scrollbar>
-                                </ScrollArea.Root>
+                                <ScrollArea className="h-auto lg:h-[500px]">
+                                    <nav className="space-y-2 pr-4">
+                                        {posts.map((post) => (
+                                            <button
+                                                key={post.slug}
+                                                onClick={() => handlePostClick(post.slug)}
+                                                className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${selectedPost?.slug === post.slug
+                                                    ? 'bg-background dark:bg-background-dark border-l-4 border-foreground dark:border-foreground-dark'
+                                                    : 'hover:bg-background dark:hover:bg-background-dark'
+                                                    }`}
+                                            >
+                                                <h3 className={`font-medium text-xs ${selectedPost?.slug === post.slug
+                                                    ? 'text-foreground dark:text-foreground-dark'
+                                                    : 'text-muted-foreground dark:text-muted-foreground-dark'
+                                                    }`}>
+                                                    {post.title}
+                                                </h3>
+                                                <time className="text-xs text-muted-foreground dark:text-muted-foreground-dark">
+                                                    {post.date}
+                                                </time>
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </ScrollArea>
                             </div>
                         </aside>
 
                         {/* Main Content - Post - Expands when sidebar is closed */}
                         <article className="flex-1 min-w-0 transition-all duration-300">
                             {selectedPost ? (
-                                <div className="bg-background dark:bg-background-dark rounded-2xl p-8 shadow-card border border-gray-200 dark:border-gray-600">
-                                    <header className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-600">
-                                        <h2 className="text-2xl font-bold text-text dark:text-text-dark mb-2">
-                                            {selectedPost.title}
-                                        </h2>
-                                        <time className="text-sm text-gray-500 dark:text-gray-400">
-                                            {selectedPost.date}
-                                        </time>
-                                    </header>
-                                    <div className="max-w-none">
-                                        <Markdown components={markdownComponents}>
-                                            {selectedPost.content}
-                                        </Markdown>
-                                    </div>
-                                    <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
-                                        <ShareButtons
-                                            title={selectedPost.title}
-                                            url={typeof window !== 'undefined' ? window.location.href : ''}
-                                        />
-                                    </div>
-                                </div>
+                                <Card className="p-0">
+                                    <CardHeader className="p-6 pb-0">
+                                        <header className="mb-5 pb-5 border-b border-border dark:border-border-dark">
+                                            <h2 className="text-xl font-bold text-foreground dark:text-foreground-dark mb-1">
+                                                {selectedPost.title}
+                                            </h2>
+                                            <time className="text-xs text-muted-foreground dark:text-muted-foreground-dark">
+                                                {selectedPost.date}
+                                            </time>
+                                        </header>
+                                    </CardHeader>
+                                    <CardContent className="p-6 pt-0">
+                                        <div className="max-w-none">
+                                            <Markdown components={markdownComponents}>
+                                                {selectedPost.content}
+                                            </Markdown>
+                                        </div>
+                                        <div className="mt-6 pt-5 border-t border-border dark:border-border-dark">
+                                            <ShareButtons
+                                                title={selectedPost.title}
+                                                url={typeof window !== 'undefined' ? window.location.href : ''}
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             ) : (
-                                <div className="bg-background dark:bg-background-dark rounded-2xl p-8 shadow-card text-center">
-                                    <p className="text-gray-500 dark:text-gray-400">
-                                        {t.blog?.noPostSelected || 'Select a post to read'}
-                                    </p>
-                                </div>
+                                <Card className="text-center p-6">
+                                    <CardContent>
+                                        <p className="text-muted-foreground dark:text-muted-foreground-dark text-sm">
+                                            {t.blog?.noPostSelected || 'Select a post to read'}
+                                        </p>
+                                    </CardContent>
+                                </Card>
                             )}
                         </article>
                     </div>

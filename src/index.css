@@ -6,8 +6,16 @@
 @tailwind utilities;
 
 @layer base {
+  /* Smaller base font size */
   html {
+    font-size: 14px;
     @apply bg-background;
+  }
+
+  @media (min-width: 640px) {
+    html {
+      font-size: 15px;
+    }
   }
 
   html.dark {
@@ -15,12 +23,21 @@
   }
 
   body {
-    @apply font-sans text-text bg-background antialiased;
+    @apply font-sans text-foreground bg-background antialiased;
   }
 
   body.dark,
   .dark body {
-    @apply bg-background-dark;
+    @apply bg-background-dark text-foreground-dark;
+  }
+
+  /* Focus ring styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  .dark *:focus-visible {
+    @apply ring-ring-dark ring-offset-background-dark;
   }
 }
 
@@ -34,9 +51,14 @@
 
 /* Skip to content link for accessibility */
 .skip-link {
-  @apply absolute -top-10 left-4 bg-primary text-white px-4 py-2 rounded-md z-[100] transition-all duration-200;
+  @apply absolute -top-10 left-4 bg-foreground text-background px-4 py-2 rounded-md z-[100] transition-all duration-200;
 }
 
 .skip-link:focus {
   @apply top-4;
+}
+
+/* Smooth transitions for theme switching */
+html {
+  @apply transition-colors duration-200;
 }

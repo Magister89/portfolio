@@ -8,14 +8,20 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#1a73e8',
+                // Light mode - grayscale
                 background: '#FFFFFF',
-                surface: '#F8F9FA',
-                text: '#3C4043',
-                // Dark mode colors
-                'background-dark': '#000000',
-                'surface-dark': '#0a0a0a',
-                'text-dark': '#e8eaed',
+                foreground: '#171717',
+                muted: '#F5F5F5',
+                'muted-foreground': '#737373',
+                border: '#E5E5E5',
+                ring: '#171717',
+                // Dark mode - grayscale
+                'background-dark': '#0A0A0A',
+                'foreground-dark': '#FAFAFA',
+                'muted-dark': '#262626',
+                'muted-foreground-dark': '#A3A3A3',
+                'border-dark': '#404040',
+                'ring-dark': '#FAFAFA',
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
@@ -25,21 +31,15 @@ export default {
                 'xl': '1rem',
                 '2xl': '1.5rem',
                 '3xl': '2rem',
+                lg: '0.5rem',
+                md: '0.375rem',
+                sm: '0.25rem',
             },
             boxShadow: {
-                'card': '0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)',
-                'card-hover': '0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15)',
-            },
-            animation: {
-                'gradient': 'gradient 3s ease infinite',
-            },
-            keyframes: {
-                gradient: {
-                    '0%, 100%': { 'background-position': '0% 50%' },
-                    '50%': { 'background-position': '100% 50%' },
-                },
+                'card': '0 1px 2px 0 rgba(0,0,0,0.1), 0 1px 3px 1px rgba(0,0,0,0.05)',
+                'card-hover': '0 1px 3px 0 rgba(0,0,0,0.1), 0 4px 8px 3px rgba(0,0,0,0.1)',
             },
         },
     },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],
 }

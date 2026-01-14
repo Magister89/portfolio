@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
-import { HiMenu, HiX, HiMail, HiSun, HiMoon } from 'react-icons/hi';
+import { Menu, X, Mail, Sun, Moon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
     const { theme, toggleTheme } = useTheme();
@@ -42,65 +43,66 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="bg-background dark:bg-background-dark border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300">
+        <nav className="bg-background dark:bg-background-dark border-b border-border dark:border-border-dark sticky top-0 z-50 transition-colors duration-300">
             <div className="px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center">
                     <Link
                         to="/"
-                        className="group flex items-center text-2xl font-bold tracking-tight transition-all duration-300 hover:scale-105"
+                        className="group flex items-center text-xl font-bold tracking-tight transition-all duration-300 hover:scale-105"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                     >
-                        <span className="bg-gradient-to-r from-primary via-cyan-400 to-blue-300 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                        <span className="text-foreground dark:text-foreground-dark">
                             giorgio
                         </span>
-                        <span className="text-gray-400 dark:text-gray-500 mx-0.5">.</span>
-                        <span className="text-text dark:text-text-dark group-hover:text-primary transition-colors">
+                        <span className="text-muted-foreground dark:text-muted-foreground-dark mx-0.5">.</span>
+                        <span className="text-muted-foreground dark:text-muted-foreground-dark group-hover:text-foreground dark:group-hover:text-foreground-dark transition-colors">
                             cembran
                         </span>
-                        <span className="ml-0.5 w-2 h-5 bg-primary animate-pulse"></span>
+                        <span className="ml-0.5 w-1.5 h-4 bg-foreground dark:bg-foreground-dark animate-pulse"></span>
                     </Link>
                 </div>
 
                 {/* Mobile Menu Button */}
                 <div className="md:hidden">
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setIsOpen(!isOpen)}
-                        className="text-text dark:text-text-dark hover:text-primary focus:outline-none"
                         aria-expanded={isOpen}
                         aria-controls="mobile-menu"
                         aria-label={isOpen ? 'Close menu' : 'Open menu'}
                     >
                         {isOpen ? (
-                            <HiX className="w-6 h-6" />
+                            <X className="w-5 h-5" />
                         ) : (
-                            <HiMenu className="w-6 h-6" />
+                            <Menu className="w-5 h-5" />
                         )}
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.about}</a>
-                    <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.activities}</a>
-                    <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.certifications}</a>
-                    <Link to="/blog" className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar?.blog || 'Blog'}</Link>
-                    <a href="mailto:giorgio.cembran@gmail.com" className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors hover:scale-110 transform duration-200" aria-label={t.navbar.contact}>
-                        <HiMail className="w-6 h-6" />
+                    <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.about}</a>
+                    <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.activities}</a>
+                    <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.certifications}</a>
+                    <Link to="/blog" className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors">{t.navbar?.blog || 'Blog'}</Link>
+                    <a href="mailto:giorgio.cembran@gmail.com" className="text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors hover:scale-110 transform duration-200" aria-label={t.navbar.contact}>
+                        <Mail className="w-5 h-5" />
                     </a>
 
                     <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
                         <button
                             onClick={() => setLanguage('en')}
-                            className={`${language === 'en' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                            className={`${language === 'en' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
                             aria-pressed={language === 'en'}
                             lang="en"
                         >
                             EN
                         </button>
-                        <span className="text-gray-300 dark:text-gray-600" aria-hidden="true">|</span>
+                        <span className="text-border dark:text-border-dark" aria-hidden="true">|</span>
                         <button
                             onClick={() => setLanguage('it')}
-                            className={`${language === 'it' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                            className={`${language === 'it' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
                             aria-pressed={language === 'it'}
                             lang="it"
                         >
@@ -108,48 +110,49 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={toggleTheme}
-                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-text dark:text-text-dark"
                         aria-label="Toggle Dark Mode"
                     >
                         {theme === 'dark' ? (
-                            <HiSun className="w-5 h-5" />
+                            <Sun className="w-4 h-4" />
                         ) : (
-                            <HiMoon className="w-5 h-5" />
+                            <Moon className="w-4 h-4" />
                         )}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div id="mobile-menu" className="md:hidden px-6 pb-4 space-y-4 bg-background dark:bg-background-dark border-t border-gray-100 dark:border-gray-800">
+                <div id="mobile-menu" className="md:hidden px-6 pb-4 space-y-4 bg-background dark:bg-background-dark border-t border-border dark:border-border-dark">
                     <div className="flex flex-col space-y-3 pt-4">
-                        <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.about}</a>
-                        <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.activities}</a>
-                        <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors cursor-pointer">{t.navbar.certifications}</a>
-                        <Link to="/blog" onClick={() => setIsOpen(false)} className="text-sm font-medium text-text dark:text-text-dark hover:text-primary transition-colors">{t.navbar?.blog || 'Blog'}</Link>
-                        <a href="mailto:giorgio.cembran@gmail.com" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-blue-400 transition-colors" aria-label={t.navbar.contact}>
+                        <a href="#about" onClick={(e) => handleSectionClick(e, 'about')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.about}</a>
+                        <a href="#activities" onClick={(e) => handleSectionClick(e, 'activities')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.activities}</a>
+                        <a href="#certifications" onClick={(e) => handleSectionClick(e, 'certifications')} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors cursor-pointer">{t.navbar.certifications}</a>
+                        <Link to="/blog" onClick={() => setIsOpen(false)} className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors">{t.navbar?.blog || 'Blog'}</Link>
+                        <a href="mailto:giorgio.cembran@gmail.com" className="flex items-center text-muted-foreground dark:text-muted-foreground-dark hover:text-foreground dark:hover:text-foreground-dark transition-colors" aria-label={t.navbar.contact}>
                             <span className="mr-2">{t.navbar.contact}</span>
-                            <HiMail className="w-5 h-5" />
+                            <Mail className="w-4 h-4" />
                         </a>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+                    <div className="flex items-center justify-between pt-4 border-t border-border dark:border-border-dark">
                         <div className="flex items-center space-x-2 text-sm font-medium" role="group" aria-label="Language selection">
                             <button
                                 onClick={() => setLanguage('en')}
-                                className={`${language === 'en' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                                className={`${language === 'en' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
                                 aria-pressed={language === 'en'}
                                 lang="en"
                             >
                                 EN
                             </button>
-                            <span className="text-gray-300 dark:text-gray-600" aria-hidden="true">|</span>
+                            <span className="text-border dark:text-border-dark" aria-hidden="true">|</span>
                             <button
                                 onClick={() => setLanguage('it')}
-                                className={`${language === 'it' ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} hover:text-primary dark:hover:text-blue-400 transition-colors`}
+                                className={`${language === 'it' ? 'text-foreground dark:text-foreground-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'} hover:text-foreground dark:hover:text-foreground-dark transition-colors`}
                                 aria-pressed={language === 'it'}
                                 lang="it"
                             >
@@ -157,17 +160,18 @@ const Navbar = () => {
                             </button>
                         </div>
 
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={toggleTheme}
-                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-text dark:text-text-dark"
                             aria-label="Toggle Dark Mode"
                         >
                             {theme === 'dark' ? (
-                                <HiSun className="w-5 h-5" />
+                                <Sun className="w-4 h-4" />
                             ) : (
-                                <HiMoon className="w-5 h-5" />
+                                <Moon className="w-4 h-4" />
                             )}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

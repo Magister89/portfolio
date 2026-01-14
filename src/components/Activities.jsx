@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // GitHub Gist for activities data (without commit hash to always get latest version)
 const ACTIVITIES_GIST_URL = 'https://gist.githubusercontent.com/Magister89/a527b1f5ff47cf9971d782185fb248a4/raw/activities.json';
@@ -37,30 +46,32 @@ const Activities = () => {
 
     // Skeleton loader to prevent layout shift
     const SkeletonTable = () => (
-        <div className="flex flex-col h-full animate-pulse">
-            <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-6 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            </div>
-            <div className="overflow-x-auto flex-grow">
-                <div className="w-full border border-gray-200 dark:border-gray-700 rounded">
-                    <div className="bg-gray-50 dark:bg-zinc-900 h-10 border-b border-gray-200 dark:border-gray-700"></div>
+        <Card className="h-full">
+            <CardHeader className="animate-pulse">
+                <div className="flex items-center justify-center gap-3">
+                    <div className="w-7 h-7 bg-muted dark:bg-muted-dark rounded"></div>
+                    <div className="h-5 w-28 bg-muted dark:bg-muted-dark rounded"></div>
+                </div>
+            </CardHeader>
+            <CardContent className="animate-pulse">
+                <div className="w-full border border-border dark:border-border-dark rounded">
+                    <div className="bg-muted dark:bg-muted-dark h-9 border-b border-border dark:border-border-dark"></div>
                     {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="h-10 border-b border-gray-200 dark:border-gray-700 flex">
-                            <div className="w-1/3 p-2"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div></div>
-                            <div className="w-2/3 p-2"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div></div>
+                        <div key={i} className="h-9 border-b border-border dark:border-border-dark flex">
+                            <div className="w-1/3 p-2"><div className="h-3 bg-muted dark:bg-muted-dark rounded"></div></div>
+                            <div className="w-2/3 p-2"><div className="h-3 bg-muted dark:bg-muted-dark rounded"></div></div>
                         </div>
                     ))}
                 </div>
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 
     if (loading) {
         return (
-            <section id="activities" className="py-20 px-6 transition-colors duration-300">
+            <section id="activities" className="py-16 px-6 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <SkeletonTable />
                         <SkeletonTable />
                         <SkeletonTable />
@@ -72,52 +83,54 @@ const Activities = () => {
 
     if (error) return null;
 
-    const Table = ({ title, data, header1, header2, iconName }) => (
-        <div className="flex flex-col h-full">
-            <div className="flex items-center justify-center gap-3 mb-4">
-                <span className="material-symbols-outlined text-3xl text-primary dark:text-blue-400">{iconName}</span>
-                <h3 className="text-xl font-bold text-text dark:text-text-dark">{title}</h3>
-            </div>
-            <div className="overflow-x-auto flex-grow">
-                <table className="w-full border-collapse bg-white dark:bg-background-dark shadow-sm border border-gray-200 dark:border-gray-700 text-sm">
-                    <thead>
-                        <tr className="bg-gray-50 dark:bg-zinc-900 border-b border-gray-200 dark:border-gray-700">
-                            <th className="py-2 px-3 text-left font-semibold text-gray-700 dark:text-gray-200 border-r border-gray-200 dark:border-gray-700 w-1/3">{header1}</th>
-                            <th className="py-2 px-3 text-left font-semibold text-gray-700 dark:text-gray-200">{header2}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+    const ActivityTable = ({ title, data, header1, header2, iconName }) => (
+        <Card className="h-full">
+            <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-center gap-2 text-lg">
+                    <span className="material-symbols-outlined text-2xl text-foreground dark:text-foreground-dark">{iconName}</span>
+                    <span className="text-foreground dark:text-foreground-dark">{title}</span>
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-1/3 text-xs">{header1}</TableHead>
+                            <TableHead className="text-xs">{header2}</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
                         {data.map((item, index) => (
-                            <tr key={index} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                <td className="py-2 px-3 text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">{item.col1}</td>
-                                <td className="py-2 px-3 text-gray-800 dark:text-gray-100 font-medium">{item.col2}</td>
-                            </tr>
+                            <TableRow key={index}>
+                                <TableCell className="text-xs text-muted-foreground dark:text-muted-foreground-dark">{item.col1}</TableCell>
+                                <TableCell className="text-xs font-medium text-foreground dark:text-foreground-dark">{item.col2}</TableCell>
+                            </TableRow>
                         ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    </TableBody>
+                </Table>
+            </CardContent>
+        </Card>
     );
 
     return (
-        <section id="activities" className="py-20 px-6 transition-colors duration-300">
+        <section id="activities" className="py-16 px-6 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <Table
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <ActivityTable
                         title={t.activities.title}
                         data={readings}
                         header1={t.activities.author}
                         header2={t.activities.bookTitle}
                         iconName="menu_book"
                     />
-                    <Table
+                    <ActivityTable
                         title={t.activities.coursesTitle}
                         data={courses}
                         header1={t.activities.platform}
                         header2={t.activities.courseName}
                         iconName="school"
                     />
-                    <Table
+                    <ActivityTable
                         title={t.activities.hobbiesTitle}
                         data={hobbies}
                         header1={t.activities.activity}
