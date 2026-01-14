@@ -175,12 +175,12 @@ function Blog() {
         }
     }, [slug, navigate]);
 
-    // Scroll to top and manage focus when entering blog page
+    // Scroll to top and manage focus when post changes
     useEffect(() => {
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         // Focus main content for screen reader users
         mainContentRef.current?.focus();
-    }, []);
+    }, [slug]);
 
 
 
