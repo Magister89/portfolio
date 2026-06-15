@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import avatar from "../assets/avatar2.jpg";
+import avatar from "../assets/sl_avatar.png";
 import alien from "../assets/alien.gif";
 import { useLanguage } from "../context/LanguageContext";
 
