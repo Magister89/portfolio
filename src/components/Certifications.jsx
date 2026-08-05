@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 // GitHub Gist for certifications data (without commit hash to always get latest version)
 const CERTIFICATIONS_GIST_URL =
-  "https://gist.githubusercontent.com/Magister89/a77718d159e04d4b175a9432d2b17891/raw/fa8e769dd0e1dd7493b943b188a4f438a54dd608/certifications.json";
+  "https://gist.githubusercontent.com/Magister89/a77718d159e04d4b175a9432d2b17891/raw/certifications.json";
 
 const SKELETON_COUNT = 7;
 
